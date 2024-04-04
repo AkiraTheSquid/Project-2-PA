@@ -1,0 +1,132 @@
+---
+title: "Project #2"
+author: "Milica Cudina"
+date: "`r Sys.Date()`"
+output: pdf_document
+urlcolor: blue
+---
+<!-- The author of this template is Dr. Gordan Zitkovic.-->
+<!-- The code chunk below contains some settings that will  -->
+<!-- make your R code look better in the output pdf file.  -->
+<!-- If you are curious about what each option below does, -->
+<!-- go to https://yihui.org/knitr/options/ -->
+<!-- If not, feel free to disregard everything ...  -->
+```{r echo=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.align="center",
+  fig.pos="t",
+  strip.white = TRUE
+)
+```
+<!-- ... down to here. -->
+
+---
+
+## Problem #1 **(55 points)**
+The `iris` data set is built-in in `R`. Start by studying the documentation of the data set, i.e., by entering `?iris` in the console. To familiarize yourselves with the architecture of an iris flower, go to: 
+
+[US Forest Service](https://www.fs.usda.gov/wildflowers/beauty/iris/flower.shtml)
+
+Your next step is exploratory data analysis. 
+
+**(10 points)**
+Which plot would you use to display pairwise associations between different measurements? How do you make sure that the different species are color-coded? Display the plot and write a few sentences about your conclusions. 
+
+
+### Principal Component Analysis (PCA)
+**($20$ points)**
+Perform the PCA on the explanatory components of the above data, provide the report, and the relevant plots. 
+
+### Principal Components Regression (PCR)
+Your next task is to predict `Sepal.Length` from the other variables in the `iris` dataset. 
+
+**(15 points)**
+Run the PCR, provide an explanation for the output, and display the relevant plots (both validation and prediction). 
+
+**(10 points)**
+Split your dataset into training ($4/5$ of the data) and testing ($1/5$ of the data). Provide the mean squared error and an appropriate plot. 
+
+
+## Problem #2 **(20+5+10+10=45 points)**
+Solve **Problem 3.7.15** (page 128) from the textbook. \\
+\\
+This problem involves the Boston data set, which we saw in the lab for this chapter. We will now try to predict per capita crime rate using the other variables in this data set. In other words, per capita crime rate is the response, and the other variables are the predictors.
+```{r}
+Boston <- read.csv("Boston.csv")
+```
+For each predictor, fit a simple linear regression model to predict the response. Describe your results. In which of the models is there a statistically significant association between the predictor and the response? Create some plots to back up your assertions.
+
+*Hint:* The command `lapply` could be useful. 
+```{r}
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_zn_model <- lm(crim~zn, data = Boston) 
+summary(crime_zn_model )
+```
+**Crime and Zn** We can notice that because we have a low p-value (5.506e-06 < 0.05) and a F-statistic of 21.1 the probability of the results given the null hypothesis (no statistically significant association) is low. Therefore we can observe there is a statistically significant association between the predictor (zn) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_zn_model)
+```
+
+
+```{r}
+crime_indus_model <- lm(crim~indus, data = Boston) 
+summary(crime_indus_model)
+```
+
+```{r}
+crime_chas_model <- lm(crim~chas, data = Boston) 
+summary(crime_chas_model)
+```
+**Crime and Chas** We can notice that because we have a high p-value (0.20294 < 0.05) and a F-statistic of 1.579 the probability of the results given the null hypothesis (no statistically significant association) is not low. Therefore we can observe there is not a statistically significant association between the predictor (chas) and response (crim)
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_chas_model)
+```
+
+```{r}
+crime_nox_model <- lm(crim~nox, data = Boston) 
+summary(crime_nox_model)
+```
+
+```{r}
+crime_rm_model <- lm(crim~rm, data = Boston) 
+summary(crime_rm_model)
+```
+
+```{r}
+crime_age_model <- lm(crim~age, data = Boston) 
+summary(crime_age_model)
+```
+```{r}
+crime_dis_model <- lm(crim~dis, data = Boston) 
+summary(crime_dis_model)
+```
+```{r}
+crime_tax_model <- lm(crim~tax, data = Boston) 
+summary(crime_tax_model)
+```
+
+```{r}
+crime_ptratio_model <- lm(crim~ptratio, data = Boston) 
+summary(crime_ptratio_model)
+```
+```{r}
+crime_lstat_model <- lm(crim~lstat, data = Boston) 
+summary(crime_lstat_model)
+```
+```{r}
+crime_medv_model <- lm(crim~medv, data = Boston) 
+summary(crime_medv_model)
+```
+
+Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis?
+
+```{r}
+crime_model_all <- lm(crim ~ ., data = Boston)
+summary(crime_model_all)
+```
+As we see above, zn,dis, rad, and medv have p values less than $0.05$, and are therefore we can reject the null hypothesis for those predictors
