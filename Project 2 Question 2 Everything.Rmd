@@ -88,11 +88,11 @@ Boston <- read.csv("Boston.csv")
 *Hint:* The command `lapply` could be useful.
 
 ```{r}
-predictors <- subset(Boston, select = -crim)
+#predictors <- subset(Boston, select = -crim)
 
-linear_fits <- lapply(predictors, function(x) summary(lm(Boston$crim ~ x), USE.NAMES=TRUE))
+#linear_fits <- lapply(predictors, function(x) summary(lm(Boston$crim ~ x), USE.NAMES=TRUE))
 
-print(linear_fits)
+#print(linear_fits)
 
 
 ```
@@ -111,8 +111,6 @@ summary(crime_X_model )
 ```
 
 ```{r}
-predictors = colnames(Boston)[3:14] 
-simple_models <- list()
 crime_zn_model <- lm(crim~zn, data = Boston) 
 summary(crime_zn_model )
 ```
@@ -132,6 +130,16 @@ plot(crime_zn_model)
 crime_indus_model <- lm(crim~indus, data = Boston) 
 summary(crime_indus_model)
 ```
+**Crime and Indus** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 99.82 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (indus) and response (crim)
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_indus_model)
+```
+
 
 ```{r}
 crime_chas_model <- lm(crim~chas, data = Boston) 
@@ -154,37 +162,105 @@ plot(crime_chas_model)
 crime_nox_model <- lm(crim~nox, data = Boston) 
 summary(crime_nox_model)
 ```
+**Crime and Nox** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 108.6 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (nox) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_nox_model)
+```
 
 ```{r}
 crime_rm_model <- lm(crim~rm, data = Boston) 
 summary(crime_rm_model)
 ```
+**Crime and Rm** We can notice that because we have a low p-value
+(6.347e-07 \< 0.05) and a F-statistic of 25.45 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (rm) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_rm_model)
+```
+
 
 ```{r}
 crime_age_model <- lm(crim~age, data = Boston) 
 summary(crime_age_model)
 ```
+**Crime and Age** We can notice that because we have a low p-value
+(2.855e-16 \< 0.05) and a F-statistic of 71.62 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (age) and response (crim)
 
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_age_model)
+```
 ```{r}
 crime_dis_model <- lm(crim~dis, data = Boston) 
 summary(crime_dis_model)
 ```
+**Crime and Dis** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 84.89 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (dis) and response (crim)
 
 ```{r}
-predictors = colnames(Boston)[3:14] 
-simple_models <- list()
+par(mfrow = c(2, 2))
+plot(crime_dis_model)
+```
+
+```{r}
 crime_rad_model <- lm(crim~rad, data = Boston) 
 summary(crime_rad_model )
+```
+**Crime and Rad** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 323.9 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (rad) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_rad_model)
 ```
 
 ```{r}
 crime_tax_model <- lm(crim~tax, data = Boston) 
 summary(crime_tax_model)
 ```
+**Crime and tax** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 259.2 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (tax) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_tax_model)
+```
 
 ```{r}
 crime_ptratio_model <- lm(crim~ptratio, data = Boston) 
 summary(crime_ptratio_model)
+```
+**Crime and ptratio** We can notice that because we have a low p-value
+(2.934e-11 \< 0.05) and a F-statistic of 46.26 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (ptratio) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_ptratio_model)
 ```
 
 ```{r}
@@ -194,11 +270,33 @@ summary(crime_lstat_model)
 #summary(crime_lstat_model)$coefficients["lstat", "Pr(>|t|)"]
 
 ```
+**Crime and lstat** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 132 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (lstat) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_lstat_model)
+```
+
 
 ```{r}
 crime_medv_model <- lm(crim~medv, data = Boston) 
 summary(crime_medv_model)
 ```
+**Crime and medv** We can notice that because we have a low p-value
+(2.2e-16 \< 0.05) and a F-statistic of 89.49 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (medv) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_medv_model)
+```
+
 
 ### (b) Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis?
 
