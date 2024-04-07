@@ -1,0 +1,366 @@
+---
+title: "Project #2"
+author: "Milica Cudina"
+date: "`r Sys.Date()`"
+output: pdf_document
+urlcolor: blue
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<!-- The author of this template is Dr. Gordan Zitkovic.-->
+
+<!-- The code chunk below contains some settings that will  -->
+
+<!-- make your R code look better in the output pdf file.  -->
+
+<!-- If you are curious about what each option below does, -->
+
+<!-- go to https://yihui.org/knitr/options/ -->
+
+<!-- If not, feel free to disregard everything ...  -->
+
+```{r echo=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.align="center",
+  fig.pos="t",
+  strip.white = TRUE
+)
+```
+
+<!-- ... down to here. -->
+
+------------------------------------------------------------------------
+
+## Problem #1 **(55 points)**
+
+The `iris` data set is built-in in `R`. Start by studying the
+documentation of the data set, i.e., by entering `?iris` in the console.
+To familiarize yourselves with the architecture of an iris flower, go
+to:
+
+[US Forest
+Service](https://www.fs.usda.gov/wildflowers/beauty/iris/flower.shtml)
+
+Your next step is exploratory data analysis.
+
+
+
+**(10 points)** Which plot would you use to display pairwise
+associations between different measurements? How do you make sure that
+the different species are color-coded? Display the plot and write a few
+sentences about your conclusions.
+
+### Principal Component Analysis (PCA)
+
+**(**$20$ points) Perform the PCA on the explanatory components of the
+above data, provide the report, and the relevant plots.
+
+### Principal Components Regression (PCR)
+
+Your next task is to predict `Sepal.Length` from the other variables in
+the `iris` dataset.
+
+**(15 points)** Run the PCR, provide an explanation for the output, and
+display the relevant plots (both validation and prediction).
+
+**(10 points)** Split your dataset into training ($4/5$ of the data) and
+testing ($1/5$ of the data). Provide the mean squared error and an
+appropriate plot.
+
+## Problem #2 **(20+5+10+10=45 points)**
+
+Solve **Problem 3.7.15** (page 128) from the textbook. \\ \\
+
+This problem involves the Boston data set, which we saw in the lab for
+this chapter. We will now try to predict per capita crime rate using the
+other variables in this data set. In other words, per capita crime rate
+is the response, and the other variables are the predictors.
+
+```{r}
+Boston <- read.csv("Boston.csv")
+```
+
+### (a) For each predictor, fit a simple linear regression model to predict the response. Describe your results. In which of the models is there a statistically significant association between the predictor and the response? Create some plots to back up your assertions.
+
+*Hint:* The command `lapply` could be useful.
+
+```{r}
+predictors <- subset(Boston, select = -crim)
+
+linear_fits <- lapply(predictors, function(x) summary(lm(Boston$crim ~ x), USE.NAMES=TRUE))
+
+print(linear_fits)
+
+
+```
+
+
+
+
+
+
+```{r}
+
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_X_model <- lm(crim~X, data = Boston) 
+summary(crime_X_model )
+```
+
+```{r}
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_zn_model <- lm(crim~zn, data = Boston) 
+summary(crime_zn_model )
+```
+
+**Crime and Zn** We can notice that because we have a low p-value
+(5.506e-06 \< 0.05) and a F-statistic of 21.1 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (zn) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_zn_model)
+```
+
+```{r}
+crime_indus_model <- lm(crim~indus, data = Boston) 
+summary(crime_indus_model)
+```
+
+```{r}
+crime_chas_model <- lm(crim~chas, data = Boston) 
+summary(crime_chas_model)
+```
+
+**Crime and Chas** We can notice that because we have a high p-value
+(0.20294 > 0.05) and a F-statistic of 1.579 the probability of the
+results given the null hypothesis (no statistically significant
+association) is not low. Therefore we can observe there is not a
+statistically significant association between the predictor (chas) and
+response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_chas_model)
+```
+
+```{r}
+crime_nox_model <- lm(crim~nox, data = Boston) 
+summary(crime_nox_model)
+```
+
+```{r}
+crime_rm_model <- lm(crim~rm, data = Boston) 
+summary(crime_rm_model)
+```
+
+```{r}
+crime_age_model <- lm(crim~age, data = Boston) 
+summary(crime_age_model)
+```
+
+```{r}
+crime_dis_model <- lm(crim~dis, data = Boston) 
+summary(crime_dis_model)
+```
+
+```{r}
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_rad_model <- lm(crim~rad, data = Boston) 
+summary(crime_rad_model )
+```
+
+```{r}
+crime_tax_model <- lm(crim~tax, data = Boston) 
+summary(crime_tax_model)
+```
+
+```{r}
+crime_ptratio_model <- lm(crim~ptratio, data = Boston) 
+summary(crime_ptratio_model)
+```
+
+```{r}
+crime_lstat_model <- lm(crim~lstat, data = Boston) 
+summary(crime_lstat_model)
+
+#summary(crime_lstat_model)$coefficients["lstat", "Pr(>|t|)"]
+
+```
+
+```{r}
+crime_medv_model <- lm(crim~medv, data = Boston) 
+summary(crime_medv_model)
+```
+
+### (b) Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis?
+
+```{r}
+crime_model_all <- lm(crim ~ ., data = Boston)
+summary(crime_model_all)
+```
+
+As we see above, zn, dis, rad, and medv have p values less than $0.05$,
+and therefore we can reject the null hypothesis for those predictors
+
+### (c)
+
+### 1. How do your results from (a) compare to your results from (b)?
+
+### 2. Create a plot displaying the univariate regression coefficients from (a) on the $x$-axis, and the multiple regression coefficients from (b) on the $y$-axis. That is, each predictor is displayed as a single point in the plot. Its coefficient in a simple linear regression model is shown on the $x$-axis, and its coefficient estimate in the multiple linear regression model is shown on the $y$-axis.
+
+Almost all the results from (a) are statistically significant as
+predictors, since there is likely some co-linearity going on. Whereas part
+(b) uses multiple linear regression, which accounts for co-linearity and so there are far fewer predictors with $p<.05$.
+
+```{r}
+names(Boston)[-2]
+```
+
+
+
+```{r}
+univariate_coefs<- lapply(predictors, function(x) coef(lm(Boston$crim ~ x)))
+print(univariate_coefs)
+```
+
+
+
+
+```{r}
+length(univariate_coefs)
+length(multiple_coefs[-1])
+```
+
+
+```{r}
+
+
+univariate_coefs <- c(0.023967, -0.07393, 0.50978, -1.8928, 31.249, -2.684, 0.10779, -1.5509, 0.61791, 0.029742, 1.1520, 0.54880, -0.36316)
+
+#univariate_coefs<- lapply(predictors, function(x) coef(lm(Boston$crim ~ x)))
+
+
+multiple_coefs <- coef(crime_model_all)
+
+
+predictor_names <- names(Boston)[-2]  
+plot(univariate_coefs, multiple_coefs[-1],
+     xlab = "Univariate Regression Coefficients",
+     ylab = "Multiple Regression Coefficients",
+     main = "Comparison of Regression Coefficients")
+
+
+#text(univariate_coefs, multiple_coefs[-1], labels = predictor_names, pos = 3)
+
+```
+
+
+We can see that all the points clump together around 0 other than nitrous oxide in the bottom right, which suggests that nitrous oxide is rather important in both models. However, they have completely different roles, as in the univariate case it is 30, whereas in the multiple regression case it is -10. 
+
+
+```{r}
+length(univariate_coefs)
+length(multiple_coefs[-1])
+```
+
+
+
+### d. Is there evidence of non-linear association between any of the predictors and the response? To answer this question, for each predictor $X$, fit a model of the form $$
+Y=\beta_0+\beta_1 X+\beta_2 X^2+\beta_3 X^3+\epsilon .
+
+
+
+```{r}
+?lapply
+```
+
+
+
+
+
+```{r}
+
+predictors <- subset(Boston, select = -crim)
+
+poly_fits <- lapply(predictors, function(x) summary(lm(Boston$crim ~ x+I(x^2)+I(x^3)), USE.NAMES=TRUE))
+
+print(poly_fits)
+
+```
+
+
+Looking at the differences in p values:
+
+$X
+p-value: < 2.2e-16
+p-value: < 2.2e-16
+
+-----------------------
+$zn
+p-value: 5.506e-06
+p-value: 1.281e-06
+-----------------------
+
+$indus
+p-value: < 2.2e-16
+p-value: < 2.2e-16
+
+$chas
+p-value: 0.2094
+p-value: 0.2094
+
+$nox
+ p-value: < 2.2e-16
+ p-value: < 2.2e-16
+
+-----------------------
+$rm
+p-value: 6.347e-07
+p-value: 1.067e-07
+-----------------------
+
+$age
+p-value: 2.855e-16
+ p-value: < 2.2e-16
+
+$dis
+p-value: < 2.2e-16
+p-value: < 2.2e-16
+
+$rad
+p-value: < 2.2e-16
+ p-value: < 2.2e-16
+
+$tax
+p-value: < 2.2e-16
+p-value: < 2.2e-16
+
+-----------------------
+$ptratio
+p-value: 2.943e-11
+p-value: 4.171e-13
+-----------------------
+
+$lstat
+p-value: < 2.2e-16
+p-value: < 2.2e-16
+
+$medv
+ p-value: < 2.2e-16
+p-value: < 2.2e-16
+
+We see that there is evidence of a non-linear association for the predictors zn, rm, and ptratio, since their p-values are different, whereas all the other p-values are the same. 
+
+
+
+
+
+
