@@ -227,16 +227,16 @@ names(Boston)[-2]
 
 
 ```{r}
-univariate_coefs<- lapply(predictors, function(x) coef(lm(Boston$crim ~ x)))
-print(univariate_coefs)
+#univariate_coefs<- lapply(predictors, function(x) coef(lm(Boston$crim ~ x)))
+#print(univariate_coefs)
 ```
 
 
 
 
 ```{r}
-length(univariate_coefs)
-length(multiple_coefs[-1])
+#length(univariate_coefs)
+#length(multiple_coefs[-1])
 ```
 
 
