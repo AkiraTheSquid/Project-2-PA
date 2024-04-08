@@ -1,0 +1,637 @@
+---
+title: "Project #2"
+author: "Milica Cudina"
+date: "`r Sys.Date()`"
+output: pdf_document
+urlcolor: blue
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<!-- The author of this template is Dr. Gordan Zitkovic.-->
+
+<!-- The code chunk below contains some settings that will  -->
+
+<!-- make your R code look better in the output pdf file.  -->
+
+<!-- If you are curious about what each option below does, -->
+
+<!-- go to https://yihui.org/knitr/options/ -->
+
+<!-- If not, feel free to disregard everything ...  -->
+
+```{r echo=FALSE, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.align="center",
+  fig.pos="t",
+  strip.white = TRUE
+)
+```
+
+<!-- ... down to here. -->
+
+------------------------------------------------------------------------
+
+## Problem #1 **(55 points)**
+
+The `iris` data set is built-in in `R`. Start by studying the
+documentation of the data set, i.e., by entering `?iris` in the console.
+To familiarize yourselves with the architecture of an iris flower, go
+to:
+
+[US Forest
+Service](https://www.fs.usda.gov/wildflowers/beauty/iris/flower.shtml)
+
+Your next step is exploratory data analysis.
+
+
+
+**(10 points)** Which plot would you use to display pairwise
+associations between different measurements? How do you make sure that
+the different species are color-coded? Display the plot and write a few
+sentences about your conclusions.
+
+### Principal Component Analysis (PCA)
+
+**(**$20$ points) Perform the PCA on the explanatory components of the
+above data, provide the report, and the relevant plots.
+
+### Principal Components Regression (PCR)
+
+Your next task is to predict `Sepal.Length` from the other variables in
+the `iris` dataset.
+
+**(15 points)** Run the PCR, provide an explanation for the output, and
+display the relevant plots (both validation and prediction).
+
+**(10 points)** Split your dataset into training ($4/5$ of the data) and
+testing ($1/5$ of the data). Provide the mean squared error and an
+appropriate plot.
+
+## Problem #2 **(20+5+10+10=45 points)**
+
+Solve **Problem 3.7.15** (page 128) from the textbook. \\ \\
+
+This problem involves the Boston data set, which we saw in the lab for
+this chapter. We will now try to predict per capita crime rate using the
+other variables in this data set. In other words, per capita crime rate
+is the response, and the other variables are the predictors.
+
+```{r}
+Boston <- read.csv("Boston.csv")
+```
+
+### (a) For each predictor, fit a simple linear regression model to predict the response. Describe your results. In which of the models is there a statistically significant association between the predictor and the response? Create some plots to back up your assertions.
+
+*Hint:* The command `lapply` could be useful.
+
+```{r}
+predictors <- subset(Boston, select = -crim)
+
+linear_fits <- lapply(predictors, function(x) summary(lm(Boston$crim ~ x), USE.NAMES=TRUE))
+
+print(linear_fits)
+
+
+```
+
+
+
+
+
+
+```{r}
+
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_X_model <- lm(crim~X, data = Boston) 
+summary(crime_X_model )
+```
+
+```{r}
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_zn_model <- lm(crim~zn, data = Boston) 
+summary(crime_zn_model )
+```
+
+**Crime and Zn** We can notice that because we have a low p-value
+(5.506e-06 \< 0.05) and a F-statistic of 21.1 the probability of the
+results given the null hypothesis (no statistically significant
+association) is low. Therefore we can observe there is a statistically
+significant association between the predictor (zn) and response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_zn_model)
+```
+
+```{r}
+crime_indus_model <- lm(crim~indus, data = Boston) 
+summary(crime_indus_model)
+```
+
+```{r}
+crime_chas_model <- lm(crim~chas, data = Boston) 
+summary(crime_chas_model)
+```
+
+**Crime and Chas** We can notice that because we have a high p-value
+(0.20294 > 0.05) and a F-statistic of 1.579 the probability of the
+results given the null hypothesis (no statistically significant
+association) is not low. Therefore we can observe there is not a
+statistically significant association between the predictor (chas) and
+response (crim)
+
+```{r}
+par(mfrow = c(2, 2))
+plot(crime_chas_model)
+```
+
+```{r}
+crime_nox_model <- lm(crim~nox, data = Boston) 
+summary(crime_nox_model)
+```
+
+```{r}
+crime_rm_model <- lm(crim~rm, data = Boston) 
+summary(crime_rm_model)
+```
+
+```{r}
+crime_age_model <- lm(crim~age, data = Boston) 
+summary(crime_age_model)
+```
+
+```{r}
+crime_dis_model <- lm(crim~dis, data = Boston) 
+summary(crime_dis_model)
+```
+
+```{r}
+predictors = colnames(Boston)[3:14] 
+simple_models <- list()
+crime_rad_model <- lm(crim~rad, data = Boston) 
+summary(crime_rad_model )
+```
+
+```{r}
+crime_tax_model <- lm(crim~tax, data = Boston) 
+summary(crime_tax_model)
+```
+
+```{r}
+crime_ptratio_model <- lm(crim~ptratio, data = Boston) 
+summary(crime_ptratio_model)
+```
+
+```{r}
+crime_lstat_model <- lm(crim~lstat, data = Boston) 
+summary(crime_lstat_model)
+
+#summary(crime_lstat_model)$coefficients["lstat", "Pr(>|t|)"]
+
+```
+
+```{r}
+crime_medv_model <- lm(crim~medv, data = Boston) 
+summary(crime_medv_model)
+```
+
+### (b) Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis?
+
+```{r}
+crime_model_all <- lm(crim ~ ., data = Boston)
+summary(crime_model_all)
+```
+
+As we see above, zn, dis, rad, and medv have p values less than $0.05$,
+and therefore we can reject the null hypothesis for those predictors
+
+### (c)
+
+### 1. How do your results from (a) compare to your results from (b)?
+
+### 2. Create a plot displaying the univariate regression coefficients from (a) on the $x$-axis, and the multiple regression coefficients from (b) on the $y$-axis. That is, each predictor is displayed as a single point in the plot. Its coefficient in a simple linear regression model is shown on the $x$-axis, and its coefficient estimate in the multiple linear regression model is shown on the $y$-axis.
+
+Almost all the results from (a) are statistically significant as
+predictors, since there is likely some co-linearity going on. Whereas part
+(b) uses multiple linear regression, which accounts for co-linearity and so there are far fewer predictors with $p<.05$.
+
+```{r}
+names(Boston)[-2]
+```
+
+
+
+```{r}
+univariate_coefs<- lapply(predictors, function(x) coef(lm(Boston$crim ~ x)))
+print(univariate_coefs)
+```
+
+
+
+
+```{r}
+length(univariate_coefs)
+length(multiple_coefs[-1])
+```
+
+
+```{r}
+
+
+univariate_coefs <- c(0.023967, -0.07393, 0.50978, -1.8928, 31.249, -2.684, 0.10779, -1.5509, 0.61791, 0.029742, 1.1520, 0.54880, -0.36316)
+
+#univariate_coefs<- lapply(predictors, function(x) coef(lm(Boston$crim ~ x)))
+
+
+multiple_coefs <- coef(crime_model_all)
+
+
+predictor_names <- names(Boston)[-2]  
+plot(univariate_coefs, multiple_coefs[-1],
+     xlab = "Univariate Regression Coefficients",
+     ylab = "Multiple Regression Coefficients",
+     main = "Comparison of Regression Coefficients")
+
+
+#text(univariate_coefs, multiple_coefs[-1], labels = predictor_names, pos = 3)
+
+```
+
+
+We can see that all the points clump together around 0 other than nitrous oxide in the bottom right, which suggests that nitrous oxide is rather important in both models. However, they have completely different roles, as in the univariate case it is 30, whereas in the multiple regression case it is -10. 
+
+
+```{r}
+length(univariate_coefs)
+length(multiple_coefs[-1])
+```
+
+
+
+### d. Is there evidence of non-linear association between any of the predictors and the response? To answer this question, for each predictor $X$, fit a model of the form $$
+Y=\beta_0+\beta_1 X+\beta_2 X^2+\beta_3 X^3+\epsilon .
+
+
+
+```{r}
+?lapply
+```
+
+
+
+
+
+```{r}
+
+predictors <- subset(Boston, select = -crim)
+
+poly_fits <- lapply(predictors, function(x) summary(lm(Boston$crim ~ x+I(x^2)+I(x^3)), USE.NAMES=TRUE))
+
+print(poly_fits)
+
+```
+
+$X
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-7.745 -3.734 -0.534  1.806 80.302 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.824e+00  1.357e+00   3.555 0.000414 ***
+x           -1.234e-01  2.316e-02  -5.328 1.50e-07 ***
+I(x^2)       6.539e-04  1.061e-04   6.164 1.46e-09 ***
+I(x^3)      -7.966e-07  1.376e-07  -5.791 1.23e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.576 on 502 degrees of freedom
+Multiple R-squared:  0.2289,	Adjusted R-squared:  0.2243 
+F-statistic: 49.67 on 3 and 502 DF,  p-value: < 2.2e-16
+
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+$zn
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-4.821 -4.614 -1.294  0.473 84.130 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.846e+00  4.330e-01  11.192  < 2e-16 ***
+x           -3.322e-01  1.098e-01  -3.025  0.00261 ** 
+I(x^2)       6.483e-03  3.861e-03   1.679  0.09375 .  
+I(x^3)      -3.776e-05  3.139e-05  -1.203  0.22954    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 8.372 on 502 degrees of freedom
+Multiple R-squared:  0.05824,	Adjusted R-squared:  0.05261 
+F-statistic: 10.35 on 3 and 502 DF,  p-value: 1.281e-06
+
+
+The p-values above SHOWS NO statistically significant non-linear relationship.
+
+
+$indus
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-8.278 -2.514  0.054  0.764 79.713 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  3.6625683  1.5739833   2.327   0.0204 *  
+x           -1.9652129  0.4819901  -4.077 5.30e-05 ***
+I(x^2)       0.2519373  0.0393221   6.407 3.42e-10 ***
+I(x^3)      -0.0069760  0.0009567  -7.292 1.20e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.423 on 502 degrees of freedom
+Multiple R-squared:  0.2597,	Adjusted R-squared:  0.2552 
+F-statistic: 58.69 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+
+$chas
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-3.738 -3.661 -3.435  0.018 85.232 
+
+Coefficients: (2 not defined because of singularities)
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   3.7444     0.3961   9.453   <2e-16 ***
+x            -1.8928     1.5061  -1.257    0.209    
+I(x^2)            NA         NA      NA       NA    
+I(x^3)            NA         NA      NA       NA    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 8.597 on 504 degrees of freedom
+Multiple R-squared:  0.003124,	Adjusted R-squared:  0.001146 
+F-statistic: 1.579 on 1 and 504 DF,  p-value: 0.2094
+
+
+since chas is a factor, squaring it does nothing
+
+
+$nox
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-9.110 -2.068 -0.255  0.739 78.302 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   233.09      33.64   6.928 1.31e-11 ***
+x           -1279.37     170.40  -7.508 2.76e-13 ***
+I(x^2)       2248.54     279.90   8.033 6.81e-15 ***
+I(x^3)      -1245.70     149.28  -8.345 6.96e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.234 on 502 degrees of freedom
+Multiple R-squared:  0.297,	Adjusted R-squared:  0.2928 
+F-statistic: 70.69 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+
+$rm
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-18.485  -3.468  -2.221  -0.015  87.219 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept) 112.6246    64.5172   1.746   0.0815 .
+x           -39.1501    31.3115  -1.250   0.2118  
+I(x^2)        4.5509     5.0099   0.908   0.3641  
+I(x^3)       -0.1745     0.2637  -0.662   0.5086  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 8.33 on 502 degrees of freedom
+Multiple R-squared:  0.06779,	Adjusted R-squared:  0.06222 
+F-statistic: 12.17 on 3 and 502 DF,  p-value: 1.067e-07
+
+The p-values above SHOWS NO statistically significant non-linear relationship.
+
+
+
+$age
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-9.762 -2.673 -0.516  0.019 82.842 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)   
+(Intercept) -2.549e+00  2.769e+00  -0.920  0.35780   
+x            2.737e-01  1.864e-01   1.468  0.14266   
+I(x^2)      -7.230e-03  3.637e-03  -1.988  0.04738 * 
+I(x^3)       5.745e-05  2.109e-05   2.724  0.00668 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.84 on 502 degrees of freedom
+Multiple R-squared:  0.1742,	Adjusted R-squared:  0.1693 
+F-statistic: 35.31 on 3 and 502 DF,  p-value: < 2.2e-16
+
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+
+$dis
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-10.757  -2.588   0.031   1.267  76.378 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  30.0476     2.4459  12.285  < 2e-16 ***
+x           -15.5543     1.7360  -8.960  < 2e-16 ***
+I(x^2)        2.4521     0.3464   7.078 4.94e-12 ***
+I(x^3)       -0.1186     0.0204  -5.814 1.09e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.331 on 502 degrees of freedom
+Multiple R-squared:  0.2778,	Adjusted R-squared:  0.2735 
+F-statistic: 64.37 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+
+$rad
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-10.381  -0.412  -0.269   0.179  76.217 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept) -0.605545   2.050108  -0.295    0.768
+x            0.512736   1.043597   0.491    0.623
+I(x^2)      -0.075177   0.148543  -0.506    0.613
+I(x^3)       0.003209   0.004564   0.703    0.482
+
+Residual standard error: 6.682 on 502 degrees of freedom
+Multiple R-squared:    0.4,	Adjusted R-squared:  0.3965 
+F-statistic: 111.6 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS NO statistically significant non-linear relationship.
+
+
+
+$tax
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-13.273  -1.389   0.046   0.536  76.950 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept)  1.918e+01  1.180e+01   1.626    0.105
+x           -1.533e-01  9.568e-02  -1.602    0.110
+I(x^2)       3.608e-04  2.425e-04   1.488    0.137
+I(x^3)      -2.204e-07  1.889e-07  -1.167    0.244
+
+Residual standard error: 6.854 on 502 degrees of freedom
+Multiple R-squared:  0.3689,	Adjusted R-squared:  0.3651 
+F-statistic:  97.8 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS NO statistically significant non-linear relationship.
+
+
+
+$ptratio
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-6.833 -4.146 -1.655  1.408 82.697 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)   
+(Intercept) 477.18405  156.79498   3.043  0.00246 **
+x           -82.36054   27.64394  -2.979  0.00303 **
+I(x^2)        4.63535    1.60832   2.882  0.00412 **
+I(x^3)       -0.08476    0.03090  -2.743  0.00630 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 8.122 on 502 degrees of freedom
+Multiple R-squared:  0.1138,	Adjusted R-squared:  0.1085 
+F-statistic: 21.48 on 3 and 502 DF,  p-value: 4.171e-13
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+
+$lstat
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-15.234  -2.151  -0.486   0.066  83.353 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)  
+(Intercept)  1.2009656  2.0286452   0.592   0.5541  
+x           -0.4490656  0.4648911  -0.966   0.3345  
+I(x^2)       0.0557794  0.0301156   1.852   0.0646 .
+I(x^3)      -0.0008574  0.0005652  -1.517   0.1299  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.629 on 502 degrees of freedom
+Multiple R-squared:  0.2179,	Adjusted R-squared:  0.2133 
+F-statistic: 46.63 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS NO statistically significant non-linear relationship.
+
+
+
+$medv
+
+Call:
+lm(formula = Boston$crim ~ x + I(x^2) + I(x^3))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-24.427  -1.976  -0.437   0.439  73.655 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 53.1655381  3.3563105  15.840  < 2e-16 ***
+x           -5.0948305  0.4338321 -11.744  < 2e-16 ***
+I(x^2)       0.1554965  0.0171904   9.046  < 2e-16 ***
+I(x^3)      -0.0014901  0.0002038  -7.312 1.05e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 6.569 on 502 degrees of freedom
+Multiple R-squared:  0.4202,	Adjusted R-squared:  0.4167 
+F-statistic: 121.3 on 3 and 502 DF,  p-value: < 2.2e-16
+
+The p-values above SHOWS a statistically significant non-linear relationship.
+
+
+
+
+
+
+
